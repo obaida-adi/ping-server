@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
 
-const http = require('http').Server(app);
 const cors = require('cors');
 const mongoose = require('mongoose');
-const io = require('socket.io')(http);
+const io = require('socket.io')(app);
 
 const usersRouter = require('./routes/users');
 const messagesRouter = require('./routes/messages');
