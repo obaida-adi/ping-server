@@ -1,17 +1,15 @@
 const express = require('express');
-const app = express();
-
 const cors = require('cors');
 const mongoose = require('mongoose');
-const io = require('socket.io')(app);
+const socketIO = require('socket.io');
+require('dotenv').config();
 
 const usersRouter = require('./routes/users');
 const messagesRouter = require('./routes/messages');
 
-require('dotenv').config();
-
 const port = process.env.PORT || 5000;
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -22,6 +20,19 @@ const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('Connected to MongoDB');
 });
+
+app.get('/', (req, res) => {
+    res.send('ping api');
+});
+
+app.use('/users', usersRouter);
+app.use('/messages', messagesRouter);
+
+app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
+});
+
+const io = socketIO(app);
 
 io.on('connect', (socket) => {
     console.log('Client connected...');
@@ -40,15 +51,4 @@ io.on('connect', (socket) => {
         console.log('User left', data);
         io.emit('leave_event', data);
     });
-});
-
-app.get('/', (req, res) => {
-    res.send('ping api');
-});
-
-app.use('/users', usersRouter);
-app.use('/messages', messagesRouter);
-
-app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
 });
