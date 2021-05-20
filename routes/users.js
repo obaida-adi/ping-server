@@ -18,4 +18,12 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json(err));
 });
 
+router.route('/:name').get((req, res) => {
+    const name = req.params.name;
+
+    User.find({ name })
+        .then(user => res.status(200).json({ user }))
+        .catch(err => res.status(400).json(err));
+});
+
 module.exports = router;
