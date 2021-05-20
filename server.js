@@ -28,11 +28,11 @@ app.get('/', (req, res) => {
 app.use('/users', usersRouter);
 app.use('/messages', messagesRouter);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
 
-const io = socketIO(app);
+const io = socketIO(server);
 
 io.on('connect', (socket) => {
     console.log('Client connected...');
